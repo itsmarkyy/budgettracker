@@ -1,17 +1,25 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Dashboard, { dashboardAction, dashboardLoader } from "./pages/Dashboard";
-import Error from "./pages/Error";
 
-// Library Imports
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// Library
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Layouts
 import Main, { mainLoader } from "./layouts/Main";
+
+// Actions
 import { logoutAction } from "./action/logout";
+import { deleteBudget } from "./action/deleteBudget";
 
+// Routes
+import Dashboard, { dashboardAction, dashboardLoader } from "./pages/Dashboard";
+import Error from "./pages/Error";
+import BudgetPage, { budgetAction, budgetLoader } from "./pages/BudgetPage";
+import ExpensesPage, {
+  expensesAction,
+  expensesLoader,
+} from "./pages/ExpensesPage";
 
-//Routes
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,23 +32,43 @@ const router = createBrowserRouter([
         element: <Dashboard />,
         loader: dashboardLoader,
         action: dashboardAction,
-        errorElement: <Error />
+        errorElement: <Error />,
       },
       {
-        path: "/logout",
-        action: logoutAction
+        path: "budget/:id",
+        element: <BudgetPage />,
+        loader: budgetLoader,
+        action: budgetAction,
+        errorElement: <Error />,
+        children: [
+          {
+            path: "delete",
+            action: deleteBudget,
+          },
+        ],
       },
-    ]
+      {
+        path: "expenses",
+        element: <ExpensesPage />,
+        loader: expensesLoader,
+        action: expensesAction,
+        errorElement: <Error />,
+      },
+      {
+        path: "logout",
+        action: logoutAction,
+      },
+    ],
   },
- 
 ]);
 
-
 function App() {
-  return <div className="App">
-    <RouterProvider router={router} />
-    <ToastContainer />
-  </div>;
+  return (
+    <div className="App">
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </div>
+  );
 }
 
 export default App;
